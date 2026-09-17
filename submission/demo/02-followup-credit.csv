@@ -1,0 +1,2 @@
+invoice,purchase_line,job,part,memo,memo_line,credit_usd,date,note
+INV-8042,1,WO-418,ALT-24-160,CM-220,1,40.00,2026-09-17,Fictional demonstration credit memo
