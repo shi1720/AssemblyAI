@@ -15,6 +15,9 @@ Date: September 17, 2026. Local macOS environment; synthetic fixtures only.
 - Generated two-page sample return PDF rendered and visually inspected; removed an orphaned paragraph at the page break.
 - Independent adversarial review found receipt-deadline, memo-deduplication, purchase-line, correction and deduction issues. They were fixed and covered by tests.
 
+- GitHub Actions passed clean install, all 58 tests, TypeScript, ESLint and production build on Linux.
+- Hosted deployment succeeded at https://benchback-shivam.sg127977958.chatgpt.site. The owner session loaded the private workspace, seeded practice records and retained them after reload. Desktop and mobile screenshots in the submission folder come from this hosted build.
+
 ## Not yet verified
 
 - Real AssemblyAI token entitlement, microphone-to-provider conversation, actual transcription/voice latency, noisy-workshop accuracy, provider billing.

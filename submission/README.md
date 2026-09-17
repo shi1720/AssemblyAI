@@ -14,3 +14,14 @@ This packet is specific to parts-core deposit recovery for independent diesel re
 Verify shipped features and fill the final application, repository, video, and deck fields before publishing. Nothing in this folder is itself a filed hackathon submission.
 
 **Review status:** the 31/40 score is an internal, provisional code/concept assessment. Live deployed voice had not yet been independently tested at this revision. The launch checklist records the verification still needed; its unchecked entries do not imply completed tests. The positioning is intentionally narrow, with no established-moat claim and a pilot that measures import effort and compares voice with a good short form.
+
+## Delivery links
+
+- App: https://benchback-shivam.sg127977958.chatgpt.site (currently owner-private; sharing approval pending)
+- Public MIT repository: https://github.com/shi1720/AssemblyAI
+- Slides: `benchback-pitch.pptx` and `benchback-pitch.pdf`
+- Cover: `benchback-cover.png`
+- Fictional sample return: `sample-return-packet.pdf`
+- Recording inputs: `demo/01-partial-credit.csv` and `demo/02-followup-credit.csv`
+
+58 automated tests and GitHub Actions passed. Live AssemblyAI voice still needs a configured account key and a recorded acceptance run. The video has not been recorded or submitted.

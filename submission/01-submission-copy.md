@@ -64,13 +64,13 @@ AssemblyAI handles the real-time spoken interaction. The application supplies ca
 | Field | Final action |
 |---|---|
 | Creator | Shivam Gupta |
-| Repository | Use the verified public Benchback repository URL; starting repository is https://github.com/shi1720/AssemblyAI |
-| Live application | Insert the tested deployment URL |
-| Judge access | Supply the verified scoped demo-access instructions |
+| Repository | https://github.com/shi1720/AssemblyAI (public, MIT) |
+| Live application | https://benchback-shivam.sg127977958.chatgpt.site (owner-private pending sharing approval) |
+| Judge access | Once sharing is enabled: open the example without using real records; sign in for private saved records. Live voice requires configured AssemblyAI key. |
 | Video | Insert the final recorded presentation URL |
-| Slides | Attach the final slide presentation |
-| Cover | Attach the final exported image |
-| License | Verify MIT license and third-party asset/dependency compatibility |
+| Slides | benchback-pitch.pptx or benchback-pitch.pdf |
+| Cover | benchback-cover.png |
+| License | MIT LICENSE and upstream build/style licenses included |
 
 ## Final claim check
 

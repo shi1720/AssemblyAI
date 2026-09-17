@@ -4,9 +4,13 @@
 
 Created by **Shivam Gupta** for the AssemblyAI Voice Agent Hackathon, September 2026.
 
+[Open Benchback](https://benchback-shivam.sg127977958.chatgpt.site) · [Public repository](https://github.com/shi1720/AssemblyAI) · [CI results](https://github.com/shi1720/AssemblyAI/actions)
+
+The hosted site currently requires owner access. Live voice awaits a server-side AssemblyAI key; the example and nonvoice workflows are available.
+
 When a shop buys a remanufactured alternator or starter, it often pays a refundable deposit on the old part—the *core*. Getting that money credited requires the right purchase match, the supplier’s return conditions, a physical return, and a credit memo. Benchback connects those steps.
 
-![Benchback cover](submission/benchback-cover.png)
+![Benchback recovery desk](submission/app-desktop.png)
 
 ## The demonstration
 
