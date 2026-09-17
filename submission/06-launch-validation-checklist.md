@@ -84,14 +84,14 @@ Commercial validation is required for claims of demand, measured ROI or sustaina
 
 ## Presentation and publication gate
 
-- [ ] Check the actual target event's eligibility, rubric and required fields.
-- [ ] Replace every obsolete deployment or architecture reference in slides, screenshots, story and captions.
-- [ ] Produce a clear video from actual UI behavior with accurate narration and synchronized captions.
-- [ ] Label fictional entities, synthetic narration and scripted replay where applicable.
-- [ ] Keep expected deposit, recorded credit, deduction and unresolved balance distinct.
-- [ ] Acknowledge incumbent core tracking without unsupported comparisons or moat claims.
-- [ ] Verify public app, repository, deck and video links in an unauthenticated context.
-- [ ] Submit the event fields and retain the platform's actual confirmation.
+- [x] Check the actual target event's eligibility, rubric and required fields.
+- [x] Replace every obsolete deployment or architecture reference in slides, screenshots, story and captions.
+- [x] Produce a clear video from actual UI behavior with accurate narration and synchronized captions.
+- [x] Label fictional entities, synthetic narration and scripted replay where applicable.
+- [x] Keep expected deposit, recorded credit, deduction and unresolved balance distinct.
+- [x] Acknowledge incumbent core tracking without unsupported comparisons or moat claims.
+- [x] Verify public app, repository, deck and video links in an unauthenticated context.
+- [x] Submit the event fields and retain the platform's actual confirmation.
 
 ## Evidence log
 
@@ -104,5 +104,5 @@ Commercial validation is required for claims of demand, measured ROI or sustaina
 | Microphone timeout recovery           | September 17, 2026, final public revision | Chrome permission attempt                   | Twenty-second timeout displayed and start button reenabled                        | docs/qa-report.md               |
 | Full physical microphone conversation | Pending                                   |                                             | Not yet verified                                                                  |                                 |
 | Deployment and CI                     | September 17, 2026, `b1985c3`             | Firebase, Cloud Run and GitHub Actions      | Public health 200 and successful CI                                               | docs/qa-report.md               |
-| Video publication                     | In progress                               |                                             | No final link recorded here                                                       |                                 |
-| Event submission                      | In progress                               |                                             | No submission confirmation recorded here                                          |                                 |
+| Video publication | September 17, 2026 | lablab player, public HTTP metadata and local hash | Final 2:52 MP4 uploaded; public file matches local checksum | submission/12-delivery-record.md |
+| Event submission | September 17, 2026 | lablab confirmation and public entry | Accepted for AssemblyAI Voice Agent Hackathon | submission/12-delivery-record.md |

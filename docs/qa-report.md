@@ -51,10 +51,14 @@ Still pending:
 - A complete physical-microphone conversation on the public app, including interruption and recovery from a dropped connection.
 - Deliberate deployed cross-account denial checks, password recovery/account-linking checks and broader keyboard/accessibility coverage.
 - Production backup restoration and operational security review.
-- Final video publication URL and actual event submission confirmation.
+- YouTube publication remains pending the upload confirmation. The final video was uploaded to lablab and the event submission was accepted. [Public submission](https://lablab.ai/ai-hackathons/assemblyai-voice-agent-hackathon/benchback/benchback-from-parts-shelf-to-paid-back).
 
 ## Commercial and operational boundaries
 
 The deployment uses Firebase Authentication, Next.js on Cloud Run, the billable named Firestore database `benchback`, and an AssemblyAI secret in Secret Manager. There is no customer SLA or self-service restore.
 
 Customer interviews, paid pilots, incremental recovery, total effort saved, willingness to pay and noisy-workshop performance remain unvalidated. Internal rubric review is a provisional development assessment, not an external judge score.
+
+## Submitted media
+
+The final 171.754687-second video is 1920×1080 H.264 at 30 fps with AAC stereo audio and burned captions. Full decode and all 12 chapter frames passed checks. Audio measures -16.39 LUFS with -4.38 dB true peak. The published lablab player reports the same duration, readyState 4 and no media error. Separate SRT captions are included in the repository. All data and synthetic voices are disclosed.

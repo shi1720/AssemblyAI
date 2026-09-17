@@ -33,4 +33,12 @@ The 31/40 assessment in the earlier review is an internal, provisional concept/c
 
 ## Publication status
 
-Video publication and event submission need confirmed delivery URLs and an actual success state on their respective platforms. This folder is a preparation packet, not proof that a submission was filed. Refresh the presentation and captions against the final app, check event-specific eligibility and fields, and publish only truthful present-tense claims. [Checklist](06-launch-validation-checklist.md).
+**Submitted successfully on September 17, 2026.** [View the accepted AssemblyAI hackathon entry](https://lablab.ai/ai-hackathons/assemblyai-voice-agent-hackathon/benchback/benchback-from-parts-shelf-to-paid-back). The public submission includes the final video, cover, pitch PDF, repository and Firebase app links.
+
+- [Final 2:52 narrated and captioned video](benchback-demo.mp4)
+- [Separate captions](benchback-demo.srt)
+- [Full project story](07-project-story.md)
+- [Video title, description and testing instructions](08-youtube-metadata.md)
+- [Delivery verification](12-delivery-record.md)
+
+The video uses actual hosted-app captures, AI narration, and clearly labelled excerpts from a real AssemblyAI test with synthetic technician speech. It is edited footage, not an unscripted customer session. Public YouTube publication awaits the upload dialog's required confirmation.

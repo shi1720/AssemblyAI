@@ -4,7 +4,7 @@ Checked September 17, 2026. Internal release checklist, not project-story copy.
 
 ## Correct event
 
-The submission target is the [AssemblyAI Voice Agent Hackathon on lablab.ai](https://lablab.ai/ai-hackathons/assemblyai-voice-agent-hackathon). Its published build window is **September 1 through September 30, 2026**. The live dashboard currently identifies submissions as open. The rendered public pages did not expose a reliable final cutoff time or timezone, so the signed-in submission form must be checked for the exact deadline. Do not infer a cutoff from midnight or the kickoff time. [Live dashboard](https://lablab.ai/ai-hackathons/assemblyai-voice-agent-hackathon/live)
+The submission target is the [AssemblyAI Voice Agent Hackathon on lablab.ai](https://lablab.ai/ai-hackathons/assemblyai-voice-agent-hackathon). Its published build window is **September 1 through September 30, 2026**. The live dashboard currently identifies submissions as open. The signed-in event page displayed a September 30, 2026, 8:30 PM India Standard Time deadline. [Live dashboard](https://lablab.ai/ai-hackathons/assemblyai-voice-agent-hackathon/live)
 
 ## Account and team
 
@@ -37,4 +37,10 @@ Use the event's four judging criteria: Application of Technology, Presentation, 
 5. Match the technology tags and architecture wording to the final implementation.
 6. Save the submission and verify the platform's actual submitted state. A filled draft is not a completed submission.
 
-No claim of completed submission is made by this document.
+## Completed submission
+
+Submitted and accepted on September 17, 2026 under Shivam Gupta's solo Benchback team. [Public entry](https://lablab.ai/ai-hackathons/assemblyai-voice-agent-hackathon/benchback/benchback-from-parts-shelf-to-paid-back). The title, descriptions, category tags, cover, final 2:52 MP4, nine-slide PDF, GitHub URL, Firebase app URL and detailed testing instructions were saved. The platform displayed an explicit success confirmation.
+
+The form limits were 50 characters for title, 255 for short description, and 2,000 each for long description and additional information. The platform was Other, with Firebase explained in the testing notes. Categories: Voice Assistant, Automotive, Business. The technology selector did not offer AssemblyAI when searched; its available labels rest api and Codex were selected, while AssemblyAI's native API is explicitly described and demonstrated throughout the entry.
+
+The published video is publicly accessible and its storage checksum matches the final local MP4. YouTube is an additional requested publication, pending the upload agreement confirmation.
