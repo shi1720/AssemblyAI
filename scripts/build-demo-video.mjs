@@ -37,7 +37,7 @@ const defaultShots = {
   '03-matching': [{ image: image('03-matching.png'), weight: 1 }],
   '04-inspection': [{ image: image('04-inspection.png'), weight: 1 }],
   '05-approval': [{ image: image('05-packet.png'), weight: 1 }],
-  '06-partial-credit': [{ image: image('06-credit-entry.png'), weight: 0.35 }, { image: image('06-partial-credit.png'), weight: 0.65 }],
+  '06-partial-credit': [{ image: image('06-credit-entry.png'), weight: 0.25 }, { image: image('06-partial-credit.png'), weight: 0.75 }],
   '07-final-credit': [{ image: image('07-final-credit.png'), weight: 1 }],
   '08-business': [{ image: deck(4), weight: 0.28 }, { image: deck(7), weight: 0.72 }],
   '09-closing': [{ image: deck(1), weight: 1 }],
@@ -93,9 +93,10 @@ if (planArg >= 0) {
   const clips = [];
   for (const c of narration.clips) {
     clips.push({ id: c.id, title: c.title, kind: 'narration', audio: path.join(out, 'narration', c.file), duration: c.duration, shots: defaultShots[c.id], captions: await polishedCaptions(c), lead: 0.35, tail: c.id === '07-final-credit' ? 1.65 : 0.65, disclosure: 'Demonstration data. AI-generated narration.' });
-    if (c.id === '03-matching') {
-      if (provider?.clips?.length) {
-        for (const p of provider.clips) {
+    const inserted = provider?.clips?.filter(p => (p.after || '03-matching') === c.id) || [];
+    if (inserted.length || (c.id === '03-matching' && !provider?.clips?.length)) {
+      if (inserted.length) {
+        for (const p of inserted) {
           if (!p.audio || !p.captions?.length) throw new Error('Every actual AssemblyAI clip needs audio and accurate captions.');
           clips.push({ ...p, kind: 'provider', audio: resolve(p.audio), shots: p.shots || [{ image: resolve(p.image), weight: 1 }], lead: p.lead ?? 0.25, tail: p.tail ?? 0.75, disclosure: p.disclosure || 'Demonstration data. Actual AssemblyAI session audio.' });
         }

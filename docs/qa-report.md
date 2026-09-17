@@ -1,6 +1,6 @@
 # Verification record
 
-Date: September 17, 2026. Firebase migration and finalization work in the shared checkout. All application records used for testing are fictional.
+Date: September 17, 2026. Public release `b1985c3691ef7c75b05f740ed4c7ff14a0a9fa20`. All application records used for testing are fictional.
 
 ## Completed local checks
 
@@ -13,7 +13,7 @@ Date: September 17, 2026. Firebase migration and finalization work in the shared
 - Saved practice records reload in stable urgency order, with WO-418 first. Timestamp ties no longer let random document IDs select the default voice record.
 - Authentication tests exercise real session routes with mocked Firebase verification: revocation, cookie flags, trusted origins, fresh password authentication, refreshed guests, spoofed headers and safe redirects.
 - Voice-client tests cover configuration, transcript/tool ordering, interruption, cleanup and microphone permission timeout behavior. They use mocked browser interfaces and do not prove a real microphone conversation.
-- TypeScript, full lint and production build were reported passing during finalization. One remaining warning is being addressed before the final deployment verification. The current dependency audit reported zero known vulnerabilities. Neither a clean audit nor these tests constitutes a complete security assessment.
+- TypeScript, full lint and production build passed. [GitHub Actions run 35199621332](https://github.com/shi1720/AssemblyAI/actions/runs/35199621332) succeeded for source commit `b1985c3`. The current dependency audit reported zero known vulnerabilities. Neither a clean audit nor these tests constitutes a complete security assessment.
 
 ## Completed public Firebase checks
 
@@ -28,23 +28,28 @@ The main development session exercised [benchback-ai.web.app](https://benchback-
 
 Distinct account states support ordinary workspace separation. Deliberately requesting every other-owner record, event, export and session on the hosted deployment remains a separate acceptance check; those authorization boundaries are covered by local API tests.
 
-## Voice evidence and limitation
+## Real provider and hosted persistence acceptance
 
-An earlier provider harness successfully exercised real AssemblyAI voice using synthetic technician speech. That harness used fictional in-memory records and was not a browser microphone or hosted persistence test. The final prompt and evidence contract require another provider acceptance run after deployment.
+The final real AssemblyAI run passed **11 of 11 assertions**, with zero reported errors. Synthetic technician audio passed through the native provider, then authenticated hosted tool routes saved observations to Firestore. The run recorded **two audit events and 21 final transcripts**. Its total scripted-session duration was **217.263 seconds**, not a response-latency measurement. [Sanitized acceptance report](live-voice-acceptance.json).
 
-A Chrome microphone-permission attempt stalled. A twenty-second permission timeout and cleanup fix now have automated coverage, but a complete physical-microphone conversation has **not** been verified. Do not claim that real microphone input, spoken output and saved hosted tools passed together. The form workflow remains available.
+The checks covered session readiness, actual agent audio, multiple purchase candidates, supplier-policy consultation, exact purchase observations, inspection capture, retained human approval, no invented credit, explanation of human approval, absence of provider errors, and hosted persistence. Purchase confirmation remained false, preparation and dispatch remained unset, and no credits were posted. This is stronger evidence than token issuance or a mocked voice contract test.
 
-No noisy-workshop accuracy, measured user latency or customer outcome is established by synthetic audio or mock transport tests. A configured secret and successful token issuance are not substitutes for those checks.
+The technician input was synthetic. A complete physical-microphone conversation has **not** been verified. In the hosted Chrome attempt, unresolved microphone permission now produced the expected twenty-second timeout message and reenabled the start button. That timeout and retry behavior was observed in the browser, not just a mock test. The form workflow remained available.
 
-## Final delivery gates
+The run does not establish noisy-workshop accuracy, physical inspection truth, customer outcomes or general language entailment. Quotes in the audit trail remain client-reported transcript evidence.
 
-The final deployment is in progress. Record the final source commit, Cloud Run revision, Firebase release and current CI result after it completes. Recheck the public app after the last code changes rather than applying earlier browser results to an untested revision.
+## Deployed release and remaining delivery gates
+
+- Public Firebase URL: [benchback-ai.web.app](https://benchback-ai.web.app), with HTTP 200 health response.
+- Cloud Run revision: `benchback-00004-xqv`.
+- Cloud Build: `0ede527a-788a-4c90-a196-46e325484df9`.
+- Source commit: `b1985c3691ef7c75b05f740ed4c7ff14a0a9fa20` on `main`.
+- CI: [run 35199621332 succeeded](https://github.com/shi1720/AssemblyAI/actions/runs/35199621332).
 
 Still pending:
 
-- Final real-provider rerun for the current prompt and evidence contract.
-- Complete hosted physical-microphone acceptance, including interruption, refused unauthorized credit posting, saved observations/transcripts after refresh and graceful network failure.
-- Final deployed cross-account denial checks, password recovery/account-linking checks and broader keyboard/accessibility coverage.
+- A complete physical-microphone conversation on the public app, including interruption and recovery from a dropped connection.
+- Deliberate deployed cross-account denial checks, password recovery/account-linking checks and broader keyboard/accessibility coverage.
 - Production backup restoration and operational security review.
 - Final video publication URL and actual event submission confirmation.
 

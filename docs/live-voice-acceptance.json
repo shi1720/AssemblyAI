@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-17T08:25:44.633Z",
+  "applicationUrl": "https://benchback-ai.web.app",
+  "cloudRunRevision": "benchback-00004-xqv",
+  "cloudBuildId": "0ede527a-788a-4c90-a196-46e325484df9",
+  "sourceCommit": "b1985c3691ef7c75b05f740ed4c7ff14a0a9fa20",
+  "scope": "Real provider audio and hosted authenticated tool API with Firestore persistence; synthetic technician; fictional QA records.",
+  "passed": true,
+  "assertions": {
+    "sessionReady": true,
+    "actualAgentAudio": true,
+    "multipleCandidatesReturned": true,
+    "supplierPolicyConsulted": true,
+    "exactPurchaseObserved": true,
+    "inspectionCaptured": true,
+    "humanApprovalPreserved": true,
+    "noInventedCredit": true,
+    "humanApprovalExplained": true,
+    "noProviderErrors": true,
+    "hostedPersistence": true
+  },
+  "assertionsPassed": 11,
+  "assertionsTotal": 11,
+  "scriptedSessionElapsedSeconds": 217.263,
+  "reportedErrorCount": 0,
+  "persistedEvidence": {
+    "inspected": true,
+    "packaging": "approved_alternative",
+    "eventCount": 2,
+    "transcriptCount": 21
+  },
+  "preservedHumanGates": {
+    "matchConfirmed": false,
+    "preparedAt": null,
+    "dispatchedAt": null,
+    "postedCreditCount": 0
+  },
+  "limitations": [
+    "Technician speech was synthetic, not captured by a physical browser microphone.",
+    "217.263 seconds is total scripted-session duration, not response latency.",
+    "Fictional QA data does not establish real-world part condition, supplier acceptance, customer savings or workshop-noise accuracy.",
+    "The transcript evidence is client-reported, not independently signed provider attestation."
+  ],
+  "sanitization": "Whitelisted summary only. Account identifiers, session tokens, cookies, raw transcripts, audio, tool payloads and private record IDs are excluded."
+}

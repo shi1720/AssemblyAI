@@ -70,7 +70,7 @@ npm run deploy
 
 Run deployment only with authorized Google Cloud credentials and the provisioned project resources. The script builds a container, deploys Cloud Run, and publishes Firebase Hosting and Firestore rules. [Deployment details](docs/operations.md).
 
-The verified local suite currently contains **92 tests**, including real Firestore emulator transactions, authentication boundaries, domain rules, PCM worklets and voice-client contracts. The public Firebase app has also been exercised with guest and email sign-in, saved returns, partial and final credit, refresh persistence, and 320px/390px layouts. A complete physical-microphone conversation remains unverified; see the [QA record](docs/qa-report.md).
+The verified local suite currently contains **92 tests**, including real Firestore emulator transactions, authentication boundaries, domain rules, PCM worklets and voice-client contracts. The public Firebase app has also been exercised with guest and email sign-in, saved returns, partial and final credit, refresh persistence, and 320px/390px layouts. The final hosted AssemblyAI run passed **11/11 checks** using synthetic technician speech, with two audit events and 21 transcripts persisted. The physical microphone conversation remains unverified; its permission-timeout and retry path were tested in Chrome. [QA record](docs/qa-report.md) · [Sanitized provider evidence](docs/live-voice-acceptance.json) · [Passing release CI](https://github.com/shi1720/AssemblyAI/actions/runs/35199621332).
 
 ## Architecture and operating limits
 

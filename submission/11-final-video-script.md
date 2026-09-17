@@ -65,3 +65,13 @@ Benchback connects the part on the bench to the credit in the ledger. Try the pu
 Voiceover: OpenAI gpt-4o-mini-tts, Cedar. Caption alignment: Whisper word timestamps. Live application voice: AssemblyAI native Voice Agent API.
 
 References: [Text to speech](https://developers.openai.com/api/docs/guides/text-to-speech) and [word timestamps](https://developers.openai.com/api/reference/typescript/resources/audio/subresources/transcriptions/methods/create).
+
+## Recorded AssemblyAI excerpts in the final edit
+
+After section 03, play the 35.10-second provider excerpt covering ambiguous identity, supplier packaging rules, and the requirement for a person to confirm the purchase match. These are actual responses from the hosted application's programmatic WebSocket acceptance test. Technician inputs were synthetic test speech. Intervening turns and waits are omitted.
+
+After section 05, play the actual synthetic test request to mark $240 recovered without a credit memo, followed by AssemblyAI's actual refusal. The edit removes the refusal clip's initial silence. It preserves the spoken response.
+
+Display this disclosure during those segments: **Recorded AssemblyAI test. Synthetic technician speech. Edited excerpts.**
+
+The surrounding visuals are actual hosted application captures and the pitch slides. This is an edited demonstration using still captures, not a continuous screen recording. The programmatic acceptance test does not establish browser microphone quality or noisy-workshop performance. No narration is substituted for the agent's recorded responses.

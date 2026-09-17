@@ -1,35 +1,40 @@
-# Benchback: independent submission review
+# Benchback: final internal rubric review
 
-Review date: September 17, 2026. This is an internal assessment, not an organizer's score or a prediction of winning. Deployment migration and live voice testing were in progress during this review.
+Reviewed September 17, 2026 against release `b1985c3`, deployed as Cloud Run revision `benchback-00004-xqv` at [benchback-ai.web.app](https://benchback-ai.web.app). This is an independent development review of the evidence, not an organizer's score or a prediction of winning. No numerical score is assigned.
 
-| Criterion | Evidence that supports the entry | Most useful improvement before publishing |
-|---|---|---|
-| Application of Technology | Typed state transitions, policy snapshots, owner scoping, guarded credit allocation, audio cleanup, and tests | Record an actual AssemblyAI audio and tool round trip on the final public deployment. Test interruption and denied microphone access. Re-run authentication and isolation tests after the hosting migration. |
-| Presentation | A memorable $240 story and a nine-slide deck | Keep one continuous cause-and-effect sequence: identify, clarify, approve, dispatch, receive, reconcile. Show a partial credit before closing the case. Make captions readable on a phone. |
-| Business Value | Clear buyer, real core-return workflow, separation of expected and recorded credit | Present the $200 plus $40 example as a workflow test. Treat proposed pricing as a hypothesis. Measure import effort and compare with a short form before claiming savings. |
-| Originality | A concrete industrial workflow with interactive inspection and credit follow-through | Show the agent resolve a purchase ambiguity and a missing-box exception. A generic voice chat over a ledger is not enough. Acknowledge incumbent core-tracking software and demonstrate the specific improvement. |
+## Evidence considered
 
-These are the four criteria in the event brief. The organizer's [judging guidance](https://lablab.ai/guide/how-to-win-an-ai-hackathon) uses the same four dimensions. No numerical weights are assumed.
+The final release has 92 passing automated tests and a successful [CI run](https://github.com/shi1720/AssemblyAI/actions/runs/35199621332). Public browser tests covered guest and email sign-in, saved inspection, human confirmation, preparation, the two-page PDF, dispatch, receipt, $200 plus $40 credit reconciliation, refresh persistence and narrow-screen layouts.
 
-## Highest-priority verification
+A real AssemblyAI run passed 11/11 assertions through authenticated hosted tools and Firestore. It saved two audit events and 21 transcripts with zero reported errors. Technician speech was synthetic. The browser's unresolved microphone permission produced the expected timeout and enabled retry; a complete physical-microphone conversation remains unverified. [QA record](../docs/qa-report.md) · [Sanitized provider evidence](../docs/live-voice-acceptance.json).
 
-1. Public access: the final `web.app` URL must open without the creator's account or a private hosting session.
-2. Identity: a new user must be able to create or access their own workspace. Untrusted identity headers must never grant another user's access after migration.
-3. Voice: demonstrate a genuine provider conversation whose structured observations persist. A token-generation response alone is insufficient evidence.
-4. Money: show that a spoken request cannot post credit, that duplicate memo allocation fails, and that accepting a deduction does not increase credited money.
-5. Recovery from failure: show a useful response to microphone denial, provider unavailability, and a dropped connection. Manual work must remain possible.
-6. Evidence consistency: final video, story, architecture diagram, README, privacy text, and deployment URL must describe the same shipped build.
+| Criterion                 | Current evidence                                                                                                                                                                                                                                                                                                                     | Remaining gap or next decision                                                                                                                                                                                                               |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Application of Technology | AssemblyAI performs real speech and agent interaction. Tools resolve ambiguous purchases, consult supplier rules and save quoted inspection evidence through the hosted authenticated API. Transactions preserve ownership, revisions and credit integrity. Human approval and zero invented credit survived the real-provider test. | Finish a physical-microphone run and realistic workshop-noise testing. Bounded quote/negation checks do not prove general semantic correctness or actual part condition. Broaden hosted adversarial and operational checks before customers. |
+| Presentation              | A concrete $240 deposit story, a visible $200 credit with $40 unresolved, a public app, a usable guest path, PDF output and a slide packet support a clear demonstration. Responsive widths of 320px and 390px were inspected.                                                                                                       | Video production and public platform publication are still in progress. Show actual behavior with readable captions, label synthetic speech and fictional records, and verify the final viewing links.                                       |
+| Business Value            | The buyer and workflow are specific: independent diesel shops handling refundable deposits on dry alternators and starters. Expected deposits, actual recorded credits, deductions and unresolved money remain separate. The app follows the process beyond a reminder or transcript.                                                | No paid pilot, incremental recovery, measured staff time saved or willingness to pay is established. Include import effort, support and billable cloud costs in a controlled comparison with a short form and the existing process.          |
+| Originality               | The differentiation combines hands-busy inspection, exact purchase clarification, missing-box exceptions and credit follow-through. The deployed provider test demonstrates these workflow elements rather than only a chat interface.                                                                                               | Established shop software already tracks cores. The defensible advantage must come from proven lower effort and reliable integration, not the presence of voice or an unsupported moat claim.                                                |
 
-## Stronger pitch choices
+These are the four dimensions supplied in the event brief. No numerical weights, organizer endorsement or external judge score are implied. Event-specific submission requirements remain documented in [the event notes](09-lablab-event-notes.md).
 
-Lead with the unpaid deposit attached to a familiar used part. Explain “core” the first time. Avoid an opening architecture tour, a long market-size claim, or a list of generic AI features.
+## Improvements made in response to review
 
-The strongest visual is the short credit: $240 expected, $200 recorded, $40 unresolved. It immediately explains why this is more than a reminder application. Follow with the agent's clarification and the human approval boundary to explain the role of AI.
+- Moved to a clean public Firebase URL with real guest/email authentication and durable Firestore transactions.
+- Added transcript-grounded inspection fields after a real agent inferred facts from a generic confirmation. Explicit quotes from the same owner, session and core are now required for changed inspection facts. Obvious contradictions and generic yes answers are rejected, while valid natural completeness phrasing is accepted.
+- Required the agent to ask about each configured alternative-packaging condition rather than infer a pallet from the word “approved.” Human physical review remains essential.
+- Preserved exact purchase identifiers, partial-credit balances, supplier memo uniqueness and human-only approvals.
+- Fixed saved-record ordering so the urgent WO-418 case is selected consistently after reload.
+- Added a bounded microphone-permission timeout, cleanup and a working retry path.
 
-The commercial claim should be narrow: test with shops whose existing process leaves returns or credits unresolved. Acknowledge that established shop software already tracks cores. Benchback must demonstrate less total work, not assume that adding voice creates a business.
+## Final publication priorities
 
-## Release limitations that must remain explicit
+1. Publish a video that clearly distinguishes the scripted public example, synthetic technician speech and real provider/tool responses. A short caption is preferable to overstating physical-microphone verification.
+2. Keep a continuous sequence from an old part to an identified deposit, clarified conditions, human approval, return evidence and reconciled credit. Lead with the problem, not architecture.
+3. Test the public video and submission links while signed out. A prepared packet or filled draft is not a submitted entry.
+4. Keep evidence tied to the release and preserve the sanitized report. Do not publish account IDs, cookies, session tokens or raw credential-bearing logs.
 
-No paying customers, measured savings, independently verified part condition, supplier acceptance guarantee, automatic supplier submission, direct carrier booking, or ERP integration has been established by this review. A successful demo does not remove those limits.
+## Limits that remain explicit
 
-The submission target is the AssemblyAI Voice Agent Hackathon on lablab.ai. Final event requirements and form constraints are tracked in `09-lablab-event-notes.md`.
+No paying customers, measured savings, independently verified part condition, guaranteed supplier acceptance, automatic supplier submission, carrier booking, ERP integration or customer SLA has been established. Backup restoration and production support procedures remain launch gates. The billable named Firestore database and other infrastructure costs must be included in commercial planning.
+
+The project now has credible evidence of real provider integration, public usability and financial-state safeguards. Whether it becomes a viable business still requires customer and operational validation. Video publication and the platform's actual submission confirmation remain unfinished delivery steps at this review time.
