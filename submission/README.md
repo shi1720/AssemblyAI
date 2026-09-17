@@ -41,4 +41,4 @@ The 31/40 assessment in the earlier review is an internal, provisional concept/c
 - [Video title, description and testing instructions](08-youtube-metadata.md)
 - [Delivery verification](12-delivery-record.md)
 
-The video uses actual hosted-app captures, AI narration, and clearly labelled excerpts from a real AssemblyAI test with synthetic technician speech. It is edited footage, not an unscripted customer session. Public YouTube publication awaits the upload dialog's required confirmation.
+The video uses actual hosted-app captures, AI narration, and clearly labelled excerpts from a real AssemblyAI test with synthetic technician speech. It is edited footage, not an unscripted customer session. The [public YouTube demo](https://www.youtube.com/watch?v=cE8brWgJIUY) includes uploaded English captions, chapters, the custom cover, and an AI-use disclosure. Playback and the 1080p English-caption option were verified while signed out.

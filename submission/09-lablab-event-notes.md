@@ -43,4 +43,4 @@ Submitted and accepted on September 17, 2026 under Shivam Gupta's solo Benchback
 
 The form limits were 50 characters for title, 255 for short description, and 2,000 each for long description and additional information. The platform was Other, with Firebase explained in the testing notes. Categories: Voice Assistant, Automotive, Business. The technology selector did not offer AssemblyAI when searched; its available labels rest api and Codex were selected, while AssemblyAI's native API is explicitly described and demonstrated throughout the entry.
 
-The published video is publicly accessible and its storage checksum matches the final local MP4. YouTube is an additional requested publication, pending the upload agreement confirmation.
+The published video is publicly accessible and its storage checksum matches the final local MP4. The additional [YouTube publication](https://www.youtube.com/watch?v=cE8brWgJIUY) is public, with English captions and chapters, and was verified while signed out.

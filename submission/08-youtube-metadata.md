@@ -1,5 +1,7 @@
 # YouTube metadata and application testing instructions
 
+Published September 17, 2026: [Watch on YouTube](https://www.youtube.com/watch?v=cE8brWgJIUY). Public visibility, uploaded English captions, cover, chapters and AI-use disclosure verified.
+
 ## Video title
 
 Benchback: From a Used Alternator to a Reconciled $240 Deposit
@@ -26,6 +28,22 @@ Pine Ridge Diesel and Northline Parts are fictional demonstration businesses. Th
 Narration uses an AI-generated voice. Application visuals are captured from the public Firebase app using fictional records. The separately labelled AssemblyAI conversation uses real provider responses to synthetic technician speech. Pauses are trimmed.
 
 #Benchback #AssemblyAI #VoiceAI #Hackathon #SmallBusiness
+
+Hackathon submission: https://lablab.ai/ai-hackathons/assemblyai-voice-agent-hackathon/benchback/benchback-from-parts-shelf-to-paid-back
+
+Chapters
+00:00 Money on the shelf
+00:10 A specific recovery workflow
+00:22 Match the exact purchase
+00:33 Recorded AssemblyAI inspection
+01:09 Resolve the missing box
+01:22 Human approval
+01:35 Guardrail test: a fabricated credit
+01:44 AssemblyAI agent refuses
+01:55 An unresolved forty dollars
+02:09 Close with actual credit
+02:19 Commercial test and architecture
+02:42 Try Benchback
 
 ## Publisher checklist
 

@@ -15,7 +15,7 @@ Created by Shivam Gupta. Verified September 17, 2026.
 
 The platform displayed “You have successfully submitted your project for the AssemblyAI - Voice Agent Hackathon event!” The public entry exposes the video player, presentation, GitHub and app links. Its video duration is 171.754687 seconds, with readyState 4 and no media error. An unauthenticated HTTP request returned 200, and the public video storage checksum matched the final local MP4.
 
-YouTube upload is prepared but awaiting confirmation of the agreement explicitly presented in its upload dialog. No YouTube publication is claimed.
+YouTube publication completed after Shivam confirmed the upload terms on September 17, 2026. [Watch the public video](https://www.youtube.com/watch?v=cE8brWgJIUY). YouTube displayed “Video published.” The signed-out watch page showed the correct title and creator, English captions, chapters and the 1080p HD option. The final SRT was uploaded as the English caption track; the cover and AI-use disclosure were set. YouTube checks reported no issues.
 
 ## Verification
 

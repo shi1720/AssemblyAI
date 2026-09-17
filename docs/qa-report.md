@@ -46,12 +46,14 @@ The run does not establish noisy-workshop accuracy, physical inspection truth, c
 - Source commit: `b1985c3691ef7c75b05f740ed4c7ff14a0a9fa20` on `main`.
 - CI: [run 35199621332 succeeded](https://github.com/shi1720/AssemblyAI/actions/runs/35199621332).
 
+Publication verified: the [lablab submission](https://lablab.ai/ai-hackathons/assemblyai-voice-agent-hackathon/benchback/benchback-from-parts-shelf-to-paid-back) was accepted. The [YouTube demo](https://www.youtube.com/watch?v=cE8brWgJIUY) is public. Its signed-out watch page showed English captions and 1080p HD playback.
+
 Still pending:
 
 - A complete physical-microphone conversation on the public app, including interruption and recovery from a dropped connection.
 - Deliberate deployed cross-account denial checks, password recovery/account-linking checks and broader keyboard/accessibility coverage.
 - Production backup restoration and operational security review.
-- YouTube publication remains pending the upload confirmation. The final video was uploaded to lablab and the event submission was accepted. [Public submission](https://lablab.ai/ai-hackathons/assemblyai-voice-agent-hackathon/benchback/benchback-from-parts-shelf-to-paid-back).
+
 
 ## Commercial and operational boundaries
 

@@ -4,7 +4,7 @@
 
 Created by **Shivam Gupta**. Built with AssemblyAI's native Voice Agent API.
 
-[Hackathon submission](https://lablab.ai/ai-hackathons/assemblyai-voice-agent-hackathon/benchback/benchback-from-parts-shelf-to-paid-back) · [Watch/download the demo](submission/benchback-demo.mp4) · [Open Benchback](https://benchback-ai.web.app) · [Public repository](https://github.com/shi1720/AssemblyAI) · [CI results](https://github.com/shi1720/AssemblyAI/actions)
+[Hackathon submission](https://lablab.ai/ai-hackathons/assemblyai-voice-agent-hackathon/benchback/benchback-from-parts-shelf-to-paid-back) · [Watch the demo on YouTube](https://www.youtube.com/watch?v=cE8brWgJIUY) · [Download the demo](submission/benchback-demo.mp4) · [Open Benchback](https://benchback-ai.web.app) · [Public repository](https://github.com/shi1720/AssemblyAI) · [CI results](https://github.com/shi1720/AssemblyAI/actions)
 
 When a shop buys a remanufactured alternator or starter, it often pays a refundable deposit on the old part, called the _core_. Getting that money credited requires the right purchase match, the supplier's return conditions, a physical return, and a credit memo. Benchback connects those steps.
 
