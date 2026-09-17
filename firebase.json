@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "site": "benchback-ai",
+    "public": "firebase-public",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [{"source":"**","run":{"serviceId":"benchback","region":"us-central1"}}]
+  },
+  "firestore": [{"database":"benchback","rules":"firestore.rules"}],
+  "emulators": {"firestore":{"port":8787},"ui":{"enabled":false},"singleProjectMode":true}
+}

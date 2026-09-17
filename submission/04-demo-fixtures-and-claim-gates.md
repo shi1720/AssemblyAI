@@ -1,13 +1,13 @@
 # Benchback · demo fixtures and claim gates
 
-Shivam Gupta — creator & builder
+Shivam Gupta - creator & builder
 
 ## Authoritative story fixture
 
 | Field | Demonstration value |
 |---|---|
-| Shop | Pine Ridge Diesel — fictional |
-| Supplier | Northline Parts — fictional |
+| Shop | Pine Ridge Diesel - fictional |
+| Supplier | Northline Parts - fictional |
 | Work order | WO-418 |
 | Purchase invoice | INV-8042 |
 | Part | ALT-24-160 alternator |

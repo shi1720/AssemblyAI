@@ -1,6 +1,6 @@
 # Benchback · business case and validation plan
 
-Shivam Gupta — creator & builder  
+Shivam Gupta - creator & builder
 Prepared September 17, 2026
 
 ## The customer and problem
@@ -17,7 +17,7 @@ This is a recurring money workflow, but its size and frequency at a particular s
 
 FleetPride's published policy permits core returns within 60 days of shipment, requires like-for-like cores, specifies packaging alternatives, permits deductions for conditions such as missing pieces, and notes that core credits can take up to 45 days. These are **FleetPride-specific terms**, not universal rules or a guarantee of reimbursement. [FleetPride returns and warranty policy](https://www.fleetpride.com/help/returnwarranty)
 
-Fullbay explains core deposits, the need to track cores across purchasing, customer credit, and supplier return, and the role of a repeatable return process. It also offers core tracking itself. This is evidence of an established workflow and a real incumbent—not proof of an uncontested market. [Fullbay core guide](https://www.fullbay.com/blog/part-cores/)
+Fullbay explains core deposits, the need to track cores across purchasing, customer credit, and supplier return, and the role of a repeatable return process. It also offers core tracking itself. This is evidence of an established workflow and a real incumbent-not proof of an uncontested market. [Fullbay core guide](https://www.fullbay.com/blog/part-cores/)
 
 The demonstration uses fictional **Northline Parts** and an explicitly configured policy. Its 60-calendar-day rule adds 60 days to the shipment date: July 23, 2026 → September 21, 2026. The production user must select the correct start event, time convention, requirements, and policy version for each supplier. A calculated date cannot establish that a supplier will accept a shipment dispatched on the last day.
 
@@ -42,7 +42,7 @@ We have not demonstrated that Fullbay lacks every proposed Benchback feature. Do
 
 Voice is useful when a user is at the bench, holding a component, checking a label, or looking for a missing piece. Follow-up questions can clarify a job number and packaging condition in the moment. Voice is less useful in a noisy bay, when a barcode already gives an exact match, or when the task is simply importing a credit memo. Keep manual input and exact-identifier selection available.
 
-A pilot must compare the conversational check against a short structured form—not only against a deliberately bad spreadsheet. If the form is faster and equally complete, simplify the product and stop claiming voice creates the value.
+A pilot must compare the conversational check against a short structured form-not only against a deliberately bad spreadsheet. If the form is faster and equally complete, simplify the product and stop claiming voice creates the value.
 
 ## Pricing and cost hypothesis
 
@@ -75,15 +75,15 @@ A $240 deposit is not automatically $240 of value created by Benchback. If the s
 
 **Proposal:** Recruit three independent diesel shops, each with enough active core-bearing jobs to produce at least ten observed return cycles. This is a recruitment target, not activity already completed.
 
-**Week 1 — Baseline and scope.** Review recent core purchases, current return logs, supplier rules, and credit memos with the parts manager. Record staff time and the reasons returns remain unresolved. Select two suppliers and define the allowed data import. Do not ingest customer information unrelated to the task.
+**Week 1 - Baseline and scope.** Review recent core purchases, current return logs, supplier rules, and credit memos with the parts manager. Record staff time and the reasons returns remain unresolved. Select two suppliers and define the allowed data import. Do not ingest customer information unrelated to the task.
 
-**Week 2 — Parallel evaluation.** Compare the existing process, a short form, and the voice check on comparable returns. Observe actual use at the bench. Count corrections, misidentification, abandonment, and duplicate entry.
+**Week 2 - Parallel evaluation.** Compare the existing process, a short form, and the voice check on comparable returns. Observe actual use at the bench. Count corrections, misidentification, abandonment, and duplicate entry.
 
 Keep the same required information and supplier rules in the voice and form conditions. Include easy exact-match cases as well as exceptions; testing only ambiguous cases would favor the voice design. Alternate the order across participants where practical. A small supervised comparison provides directional evidence, not a randomized proof of savings.
 
-**Week 3 — Follow-through.** Prepare real packets under shop supervision, record actual dispatch references, and import available credits. A returned part is not a completed financial outcome.
+**Week 3 - Follow-through.** Prepare real packets under shop supervision, record actual dispatch references, and import available credits. A returned part is not a completed financial outcome.
 
-**Week 4 — Buyer review.** Show time measurements, unresolved deposits, credits, and errors. Ask for a concrete renewal at the proposed price. Supplier credit cycles may extend beyond four weeks, so report pending outcomes and continue read-only measurement with permission; do not fabricate full-cycle results.
+**Week 4 - Buyer review.** Show time measurements, unresolved deposits, credits, and errors. Ask for a concrete renewal at the proposed price. Supplier credit cycles may extend beyond four weeks, so report pending outcomes and continue read-only measurement with permission; do not fabricate full-cycle results.
 
 ### Primary measurements
 

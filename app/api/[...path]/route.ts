@@ -1,4 +1,3 @@
-import { env } from "cloudflare:workers";
 import { z, ZodError } from "zod";
 import {
   actionSchema,
@@ -7,7 +6,6 @@ import {
   demoPolicy,
   emptyState,
   inspectReadiness,
-  normalizeId,
   policySchema,
   searchCores,
   todayUTC,
@@ -18,7 +16,6 @@ import {
 import {
   ApiError,
   body,
-  db,
   getCore,
   getCores,
   getPolicies,
@@ -26,9 +23,23 @@ import {
   quota,
   sameOrigin,
   saveAction,
-  creditSourceKey,
   releaseQuota,
 } from "@/lib/server";
+import {
+  createPolicy,
+  insertCores,
+  getEvents,
+  getTranscripts,
+  getSessionTranscripts,
+  deleteWorkspace,
+  importCredits,
+  createSession,
+  getSession,
+  endSession,
+  saveTranscript,
+  purchaseKey,
+} from "@/lib/database";
+import { groundInspection } from "@/lib/inspection-evidence";
 import { agentConfig } from "@/lib/agent";
 export const dynamic = "force-dynamic";
 const headers = {
@@ -47,7 +58,7 @@ async function route(request: Request, method: string) {
     if (method === "GET" && path[0] === "health")
       return json({
         ok: true,
-        voiceConfigured: !!env.ASSEMBLYAI_API_KEY,
+        voiceConfigured: !!process.env.ASSEMBLYAI_API_KEY,
         service: "Benchback",
       });
     if (method === "POST") sameOrigin(request);
@@ -61,45 +72,25 @@ async function route(request: Request, method: string) {
       const [cores, policies, events, transcripts] = await Promise.all([
         getCores(user.userId),
         getPolicies(user.userId),
-        db()
-          .prepare(
-            "SELECT data FROM events WHERE owner = ? ORDER BY created_at, id",
-          )
-          .bind(user.userId)
-          .all<{ data: string }>(),
-        db()
-          .prepare(
-            "SELECT id, session_id, core_id, speaker, content, created_at FROM transcripts WHERE owner = ? ORDER BY created_at, id",
-          )
-          .bind(user.userId)
-          .all(),
+        getEvents(user.userId),
+        getTranscripts(user.userId),
       ]);
       return json({
         schemaVersion: 1,
         exportedAt: new Date().toISOString(),
         cores,
         policies,
-        events: events.results.map((e) => JSON.parse(e.data)),
-        transcripts: transcripts.results,
+        events,
+        transcripts,
       });
     }
     if (method === "GET" && path[0] === "cores" && path[2] === "events") {
       await getCore(path[1], user.userId);
-      const events = await db()
-        .prepare(
-          "SELECT data FROM events WHERE owner = ? AND core_id = ? ORDER BY created_at, id",
-        )
-        .bind(user.userId, path[1])
-        .all<{ data: string }>();
-      const transcripts = await db()
-        .prepare(
-          "SELECT id, speaker, content FROM transcripts WHERE owner = ? AND core_id = ? ORDER BY created_at, id LIMIT 500",
-        )
-        .bind(user.userId, path[1])
-        .all<{ id: string; speaker: string; content: string }>();
+      const events = await getEvents(user.userId, path[1]);
+      const transcripts = await getTranscripts(user.userId, path[1]);
       return json({
-        events: events.results.map((e) => JSON.parse(e.data)),
-        transcripts: transcripts.results.map((t) => ({
+        events,
+        transcripts: transcripts.map((t) => ({
           id: t.id,
           speaker: t.speaker,
           text: t.content,
@@ -113,20 +104,7 @@ async function route(request: Request, method: string) {
         .strict()
         .parse(input);
       // Keep daily abuse quotas so deletion cannot reset the paid voice allowance.
-      await db().batch(
-        [
-          "transcripts",
-          "sessions",
-          "events",
-          "credit_allocations",
-          "cores",
-          "policies",
-        ].map((table) =>
-          db()
-            .prepare(`DELETE FROM ${table} WHERE owner = ?`)
-            .bind(user.userId),
-        ),
-      );
+      await deleteWorkspace(user.userId);
       return json({ deleted: true });
     }
     if (path[0] === "seed") {
@@ -149,47 +127,13 @@ async function route(request: Request, method: string) {
           })),
         },
       }));
-      const now = new Date().toISOString();
-      await db().batch([
-        db()
-          .prepare(
-            "INSERT INTO policies (id, owner, data, created_at) VALUES (?, ?, ?, ?)",
-          )
-          .bind(p.id, user.userId, JSON.stringify(p), now),
-        ...cores.map((c) => coreInsert(c, user.userId)),
-        ...cores.flatMap((c) =>
-          c.state.credits.map((cr) =>
-            db()
-              .prepare(
-                "INSERT INTO credit_allocations (id,owner,core_id,source_key,amount_cents,reversed) VALUES (?,?,?,?,?,0)",
-              )
-              .bind(
-                cr.id,
-                user.userId,
-                c.id,
-                creditSourceKey(c.supplier, cr.memo, cr.lineRef),
-                cr.amountCents,
-              ),
-          ),
-        ),
-      ]);
+      await insertCores(user.userId, cores, p);
       return json({ cores, policies: [p] });
     }
     if (path[0] === "policies") {
       const validated = policySchema.parse(input);
       const p: Policy = { ...validated, id: crypto.randomUUID() };
-      const count = await db()
-        .prepare("SELECT count(*) AS n FROM policies WHERE owner = ?")
-        .bind(user.userId)
-        .first<{ n: number }>();
-      if ((count?.n || 0) >= 100)
-        throw new ApiError(422, "Policy limit reached.");
-      await db()
-        .prepare(
-          "INSERT INTO policies (id, owner, data, created_at) VALUES (?, ?, ?, ?)",
-        )
-        .bind(p.id, user.userId, JSON.stringify(p), new Date().toISOString())
-        .run();
+      await createPolicy(user.userId, p);
       return json({ policy: p });
     }
     if (path[0] === "cores" && path.length === 1) {
@@ -230,7 +174,7 @@ async function route(request: Request, method: string) {
         seen.add(key);
         return c;
       });
-      await db().batch(cores.map((c) => coreInsert(c, user.userId)));
+      await insertCores(user.userId, cores);
       return json({ cores });
     }
     if (path[0] === "cores" && path[2] === "actions") {
@@ -272,120 +216,13 @@ async function route(request: Request, method: string) {
         .parse(input.items);
       if (new Set(items.map((i) => i.coreId)).size !== items.length)
         throw new ApiError(422, "Use one credit memo per core in each import.");
-      const { applyAction } = await import("@/lib/domain");
-      const prepared = [];
-      for (const i of items) {
-        const c = await getCore(i.coreId, user.userId);
-        if (c.state.revision !== i.revision)
-          throw new ApiError(
-            409,
-            "A record changed. Refresh the import preview.",
-          );
-        const action = actionSchema.parse({
-          type: "add_credit",
-          memo: i.memo,
-          lineRef: i.lineRef,
-          amountCents: i.amountCents,
-          date: i.date,
-          note: i.note,
-        });
-        const at = new Date().toISOString();
-        let after;
-        try {
-          after = applyAction(c, action, user.displayName, "owner", at);
-        } catch (e) {
-          throw new ApiError(422, `${c.invoice}: ${(e as Error).message}`);
-        }
-        prepared.push({
-          c,
-          after,
-          event: {
-            id: crypto.randomUUID(),
-            coreId: c.id,
-            action: "add_credit",
-            actor: user.displayName,
-            source: "credit CSV import",
-            at,
-            before: c.state,
-            after,
-            note: i.note,
-          },
-        });
-      }
-      // A failed revision guard deliberately violates NOT NULL, rolling back the entire D1 batch.
-      const sourceKeys = prepared.map(({ c, after }) => {
-        const credit = after.credits.at(-1)!;
-        return creditSourceKey(c.supplier, credit.memo, credit.lineRef);
-      });
-      if (new Set(sourceKeys).size !== sourceKeys.length)
-        throw new ApiError(
-          409,
-          "The same supplier memo line appears more than once. Nothing was imported.",
-        );
-      const statements = prepared.flatMap(({ c, after, event }) => [
-        db()
-          .prepare(
-            "UPDATE cores SET state = CASE WHEN revision = ? THEN ? ELSE NULL END, revision = ?, last_event_id = ? WHERE id = ? AND owner = ?",
-          )
-          .bind(
-            c.state.revision,
-            JSON.stringify(after),
-            after.revision,
-            event.id,
-            c.id,
-            user.userId,
-          ),
-        db()
-          .prepare(
-            "INSERT INTO events (id, owner, core_id, request_id, fingerprint, data, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
-          )
-          .bind(
-            event.id,
-            user.userId,
-            c.id,
-            event.id,
-            JSON.stringify({
-              type: "add_credit",
-              credit: after.credits.at(-1),
-            }),
-            JSON.stringify(event),
-            event.at,
-          ),
-        db()
-          .prepare(
-            "INSERT INTO credit_allocations (id, owner, core_id, source_key, amount_cents, reversed) VALUES (?, ?, ?, ?, ?, 0)",
-          )
-          .bind(
-            after.credits.at(-1)!.id,
-            user.userId,
-            c.id,
-            creditSourceKey(
-              c.supplier,
-              after.credits.at(-1)!.memo,
-              after.credits.at(-1)!.lineRef,
-            ),
-            after.credits.at(-1)!.amountCents,
-          ),
-      ]);
-      try {
-        await db().batch(statements);
-      } catch (e) {
-        if ((e as Error).message.includes("UNIQUE"))
-          throw new ApiError(
-            409,
-            "A supplier memo line is already posted. Nothing was imported.",
-          );
-        throw e;
-      }
-      return json({
-        cores: prepared.map((x) => ({ ...x.c, state: x.after })),
-        events: prepared.map((x) => x.event),
-      });
+      return json(await importCredits(user.userId, user.displayName, items));
     }
+
     if (path[0] === "voice" && path[1] === "token") {
       const d = z.object({ coreId: z.string() }).parse(input);
       const core = await getCore(d.coreId, user.userId);
-      if (!env.ASSEMBLYAI_API_KEY)
+      if (!process.env.ASSEMBLYAI_API_KEY)
         throw new ApiError(
           503,
           "Live voice is not configured yet. Use the form or ask the workspace owner to add ASSEMBLYAI_API_KEY.",
@@ -405,7 +242,9 @@ async function route(request: Request, method: string) {
         const upstream = await fetch(
           "https://agents.assemblyai.com/v1/token?expires_in_seconds=60&max_session_duration_seconds=600",
           {
-            headers: { Authorization: `Bearer ${env.ASSEMBLYAI_API_KEY}` },
+            headers: {
+              Authorization: `Bearer ${process.env.ASSEMBLYAI_API_KEY}`,
+            },
             signal: AbortSignal.timeout(15000),
           },
         );
@@ -420,12 +259,12 @@ async function route(request: Request, method: string) {
         if (!tokenData.token)
           throw new ApiError(502, "AssemblyAI did not return a session token.");
         const id = crypto.randomUUID();
-        await db()
-          .prepare(
-            "INSERT INTO sessions (id,owner,core_id,created_at) VALUES (?,?,?,?)",
-          )
-          .bind(id, user.userId, core.id, new Date().toISOString())
-          .run();
+        await createSession(user.userId, {
+          id,
+          core_id: core.id,
+          created_at: new Date().toISOString(),
+          ended_at: null,
+        });
         issued = true;
         return json({
           token: tokenData.token,
@@ -441,25 +280,9 @@ async function route(request: Request, method: string) {
       }
     }
     if (path[0] === "sessions") {
-      const session = await db()
-        .prepare(
-          "SELECT id,core_id,created_at,ended_at FROM sessions WHERE id=? AND owner=?",
-        )
-        .bind(path[1], user.userId)
-        .first<{
-          id: string;
-          core_id: string;
-          created_at: string;
-          ended_at: string | null;
-        }>();
-      if (!session) throw new ApiError(404, "Voice session not found.");
+      const session = await getSession(user.userId, path[1]);
       if (path[2] === "end") {
-        await db()
-          .prepare(
-            "UPDATE sessions SET ended_at=COALESCE(ended_at,?) WHERE id=? AND owner=?",
-          )
-          .bind(new Date().toISOString(), session.id, user.userId)
-          .run();
+        await endSession(user.userId, session.id);
         return json({ ok: true });
       }
       if (
@@ -479,20 +302,14 @@ async function route(request: Request, method: string) {
           })
           .parse(input);
         await quota(`transcript:${session.id}`, 400);
-        await db()
-          .prepare(
-            "INSERT INTO transcripts (id,session_id,owner,core_id,speaker,content,created_at) VALUES (?,?,?,?,?,?,?) ON CONFLICT(id) DO NOTHING",
-          )
-          .bind(
-            session.id + ":" + d.id,
-            session.id,
-            user.userId,
-            session.core_id,
-            d.speaker,
-            d.text,
-            new Date().toISOString(),
-          )
-          .run();
+        await saveTranscript(user.userId, {
+          id: session.id + ":" + d.id,
+          session_id: session.id,
+          core_id: session.core_id,
+          speaker: d.speaker,
+          content: d.text,
+          created_at: new Date().toISOString(),
+        });
         return json({ ok: true });
       }
       if (path[2] === "tool") {
@@ -567,8 +384,8 @@ async function route(request: Request, method: string) {
             purchaseLine: args.purchaseLine,
             job: args.job,
           });
-        else if (d.name === "record_inspection")
-          action = actionSchema.parse({
+        else if (d.name === "record_inspection") {
+          const inspection = actionSchema.parse({
             type: "inspect",
             complete: args.complete,
             packaging: args.packaging,
@@ -576,7 +393,16 @@ async function route(request: Request, method: string) {
             rma: args.rma,
             note: args.note,
           });
-        else if (d.name === "add_followup")
+          if (inspection.type !== "inspect")
+            throw new ApiError(422, "Invalid inspection.");
+          action = groundInspection(
+            core,
+            inspection,
+            args.evidence,
+            await getSessionTranscripts(user.userId, session.id),
+            session.id,
+          );
+        } else if (d.name === "add_followup")
           action = actionSchema.parse({ type: "followup", note: args.note });
         else throw new ApiError(422, "Unknown tool.");
         const saved = await saveAction({
@@ -584,6 +410,7 @@ async function route(request: Request, method: string) {
           ownerId: user.userId,
           actor: "Benchback AI",
           role: "agent",
+          sessionId: session.id,
           action,
           revision: core.state.revision,
           requestId: `${session.id}:${d.callId}`,
@@ -623,25 +450,6 @@ async function route(request: Request, method: string) {
       500,
     );
   }
-}
-function purchaseKey(c: Pick<Core, "invoice" | "purchaseLine" | "supplier">) {
-  return [c.supplier, c.invoice, c.purchaseLine].map(normalizeId).join("|");
-}
-function coreInsert(c: Core, ownerId: string) {
-  const { state, ...data } = c;
-  return db()
-    .prepare(
-      "INSERT INTO cores (id,owner,purchase_key,data,state,revision,created_at) VALUES (?,?,?,?,?,?,?)",
-    )
-    .bind(
-      c.id,
-      ownerId,
-      purchaseKey(c),
-      JSON.stringify(data),
-      JSON.stringify(state),
-      state.revision,
-      c.createdAt,
-    );
 }
 export async function GET(r: Request) {
   return route(r, "GET");

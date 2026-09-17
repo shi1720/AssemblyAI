@@ -1,5 +1,5 @@
 import Link from "next/link";
-export const metadata = { title: "Privacy & data — Benchback" };
+export const metadata = { title: "Privacy & data - Benchback" };
 export default function Privacy() {
   return (
     <main className="privacy">
@@ -20,7 +20,7 @@ export default function Privacy() {
         Signed-in workspaces store purchase identifiers, supplier policies,
         inspection observations, correction history, dispatch and receipt
         references, credit-memo entries and final conversation transcripts.
-        Identity comes from Sign in with ChatGPT. Records are scoped to the
+        Identity comes from Firebase Authentication. Records are scoped to the
         signed-in account.
       </p>
       <h2>Voice processing</h2>
@@ -43,9 +43,11 @@ export default function Privacy() {
       </p>
       <h2>Hosting and access</h2>
       <p>
-        The deployed application uses Cloudflare Workers and D1 through OpenAI
-        Sites. The hosting platform provides sign-in and forwards authenticated
-        identity to the application. API keys remain server-side. Voice uses
+        The application runs on Firebase Hosting and Google Cloud Run. Records
+        are stored in a dedicated Firestore database. Firebase Authentication
+        verifies sign-in; a secure, HTTP-only session cookie protects your
+        workspace. Guest accounts are tied to this browser until linked to an
+        email account. API keys are held in Google Secret Manager. Voice uses
         short-lived, single-use tokens, bounded sessions and issuance quotas.
       </p>
       <h2>Control and retention</h2>

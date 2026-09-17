@@ -1,6 +1,6 @@
 # Benchback · three-minute presentation script
 
-Shivam Gupta — creator & builder
+Shivam Gupta - creator & builder
 
 Target: **3:00**, including real agent replies. Speak only the quoted lines. Agent audio should come from the actual recorded session; its exact wording can vary. Use screen captions for long identifiers rather than reading every identifier aloud.
 
@@ -22,7 +22,7 @@ Target: **3:00**, including real agent replies. Speak only the quoted lines. Age
 
 “The repair is finished. The customer has left. But this old alternator still represents a two-hundred-and-forty-dollar deposit the shop can claim back from its supplier.
 
-I'm Shivam Gupta, creator and builder of Benchback. It connects the part on the bench to the return—and the supplier credit that actually arrives.”
+I'm Shivam Gupta, creator and builder of Benchback. It connects the part on the bench to the return-and the supplier credit that actually arrives.”
 
 ## 00:23–00:54 · Find the right deposit
 
@@ -78,7 +78,7 @@ The follow-up memo credits the remaining forty dollars. Now the record is fully 
 
 **Say:**
 
-“We would start with independent diesel shops whose existing process leaves core returns unresolved. The proposed plan is ninety-nine dollars per month, including two hundred voice minutes—fifteen dollars at AssemblyAI's published rate, before other costs.
+“We would start with independent diesel shops whose existing process leaves core returns unresolved. The proposed plan is ninety-nine dollars per month, including two hundred voice minutes-fifteen dollars at AssemblyAI's published rate, before other costs.
 
 A pilot must prove less staff work or additional actual credit. A dashboard of expected refunds is not proof of value.”
 

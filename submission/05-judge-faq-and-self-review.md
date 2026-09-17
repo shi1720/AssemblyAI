@@ -1,12 +1,12 @@
 # Benchback · judge questions and candid self-review
 
-Shivam Gupta — creator & builder
+Shivam Gupta - creator & builder
 
 The quoted answers below can be spoken verbatim. They describe the intended product and its current evidence boundaries. Update implementation-status answers only when new verification exists.
 
 ## Why voice instead of a short form?
 
-“A form may be better for a straightforward return. Voice is useful when someone is handling a used part, reading a label, or explaining an exception: two similar purchases, a missing box, or an uncertain condition. The agent can ask the next question immediately. We still provide manual input, and our pilot must compare voice against a good short form—not just a bad spreadsheet.”
+“A form may be better for a straightforward return. Voice is useful when someone is handling a used part, reading a label, or explaining an exception: two similar purchases, a missing box, or an uncertain condition. The agent can ask the next question immediately. We still provide manual input, and our pilot must compare voice against a good short form-not just a bad spreadsheet.”
 
 ## Why would a shop buy this if it already has Fullbay?
 

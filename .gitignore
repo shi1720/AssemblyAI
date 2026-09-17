@@ -47,3 +47,6 @@ next-env.d.ts
 
 !.env.example
 *.tsbuildinfo
+/firebase-debug.log
+/firestore-debug.log
+/.firebase/

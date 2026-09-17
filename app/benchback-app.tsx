@@ -703,19 +703,46 @@ export default function BenchbackApp({
                 <a className="btn small" href={workspace ? "/" : "/workspace"}>
                   {workspace ? "Public demo" : "My workspace"}
                 </a>
-                <a
+                <button
                   className="close"
-                  href="/signout-with-chatgpt?return_to=/"
-                  target="_top"
                   aria-label="Sign out"
+                  onClick={async () => {
+                    if (
+                      user.email === "Guest workspace" &&
+                      !window.confirm(
+                        "Sign out of this guest workspace? Without creating an account first, these records cannot be restored. Choose Cancel and open Settings to keep your workspace.",
+                      )
+                    )
+                      return;
+                    const response = await fetch("/api/auth/logout", {
+                      method: "POST",
+                    });
+                    if (response.ok) {
+                      const { getAuth, signOut } = await import(
+                        "firebase/auth"
+                      );
+                      const { getApps, initializeApp } = await import(
+                        "firebase/app"
+                      );
+                      const config = (
+                        await import("@/lib/firebase-config.json")
+                      ).default;
+                      await signOut(
+                        getAuth(getApps()[0] || initializeApp(config)),
+                      );
+                      // Full navigation clears cached authenticated server components.
+                      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+                      window.location.assign("/");
+                    }
+                  }}
                 >
                   <LogOut size={17} />
-                </a>
+                </button>
               </>
             ) : (
               <a
                 className="btn small"
-                href="/signin-with-chatgpt?return_to=%2Fworkspace"
+                href="/signin?return_to=%2Fworkspace"
                 target="_top"
               >
                 <LogIn size={14} />
@@ -1347,11 +1374,11 @@ export default function BenchbackApp({
               </p>
               <a
                 className="btn primary wide"
-                href="/signin-with-chatgpt?return_to=%2Fworkspace"
+                href="/signin?return_to=%2Fworkspace"
                 target="_top"
               >
                 <LogIn size={16} />
-                Continue with ChatGPT
+                Open your workspace
               </a>
               <button
                 className="btn wide"
@@ -1427,7 +1454,7 @@ export default function BenchbackApp({
                 {selected.policy.exercise ? " · FICTIONAL SAMPLE" : ""}
               </div>
               <h3>
-                {selected.supplier} — {selected.policy.name}
+                {selected.supplier} - {selected.policy.name}
               </h3>
               <p className="instruction">{selected.policy.instructions}</p>
               <div className="settings-item">
@@ -1826,6 +1853,15 @@ function SettingsView({
               Privacy & data details <ArrowRight size={13} />
             </a>
             {user && <p className="subtitle">Signed in as {user.email}</p>}
+            {user?.email === "Guest workspace" && (
+              <div className="instruction">
+                Guest access belongs to this browser. Create an account before
+                signing out or clearing browser data to keep your records.
+                <a className="text-link" href="/signin?mode=signup">
+                  Create an account for this workspace <ArrowRight size={13} />
+                </a>
+              </div>
+            )}
             {workspace && (
               <div className="button-row" style={{ marginTop: 20 }}>
                 <button className="btn secondary" onClick={onExport}>
@@ -1918,5 +1954,5 @@ function ReturnPacket({ core }: { core: Core }) {
   );
 }
 function returnText(c: Core) {
-  return `BENCHBACK — ${c.exercise ? "FICTIONAL PRACTICE " : ""}CORE RETURN\nSupplier: ${c.supplier}\nPolicy: ${c.policy.version}\nPart: ${c.part} / ${c.description}\nInvoice: ${c.invoice}\nJob: ${c.job}\nExpected deposit: ${money(c.depositCents)}\nReturn by: ${inspectReadiness(c).deadline} (${c.policy.deadlineBasis})\nPackaging: ${c.state.packaging}\nComplete: ${c.state.complete}\nLabel attached: ${c.state.labelAttached}\nNotes: ${c.state.conditionNote}\nPrepared by: ${c.state.preparedBy}\n\n${c.policy.instructions}\n\nNot a shipping label or guarantee of supplier credit.`;
+  return `BENCHBACK - ${c.exercise ? "FICTIONAL PRACTICE " : ""}CORE RETURN\nSupplier: ${c.supplier}\nPolicy: ${c.policy.version}\nPart: ${c.part} / ${c.description}\nInvoice: ${c.invoice}\nJob: ${c.job}\nExpected deposit: ${money(c.depositCents)}\nReturn by: ${inspectReadiness(c).deadline} (${c.policy.deadlineBasis})\nPackaging: ${c.state.packaging}\nComplete: ${c.state.complete}\nLabel attached: ${c.state.labelAttached}\nNotes: ${c.state.conditionNote}\nPrepared by: ${c.state.preparedBy}\n\n${c.policy.instructions}\n\nNot a shipping label or guarantee of supplier credit.`;
 }

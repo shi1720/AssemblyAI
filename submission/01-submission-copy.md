@@ -1,16 +1,16 @@
 # Benchback
 
-**The job is done. Get the deposit back.**  
-Shivam Gupta — creator & builder  
+**The job is done. Get the deposit back.**
+Shivam Gupta - creator & builder
 AssemblyAI Voice Agent Hackathon · September 2026
 
 ## Project title
 
-Benchback — From old part to supplier credit
+Benchback - From old part to supplier credit
 
 ## Short description
 
-Benchback helps independent diesel repair shops recover parts-core deposits. Speak through a bench inspection, confirm the right invoice and supplier rules, prepare a return packet, and track the supplier's actual credit—including shortfalls.
+Benchback helps independent diesel repair shops recover parts-core deposits. Speak through a bench inspection, confirm the right invoice and supplier rules, prepare a return packet, and track the supplier's actual credit-including shortfalls.
 
 ## One-sentence pitch
 
@@ -18,7 +18,7 @@ The old alternator on a repair bench can represent a refundable deposit; Benchba
 
 ## Long description
 
-The repair is finished. The customer has left. An old alternator is still sitting on the bench—and the shop's core deposit is still tied up with the supplier.
+The repair is finished. The customer has left. An old alternator is still sitting on the bench-and the shop's core deposit is still tied up with the supplier.
 
 Getting that deposit back takes more than remembering to return a part. Someone must connect the old component to the right purchase and job, check the supplier's return requirements, prepare the paperwork, send it before the applicable deadline, and check the credit that eventually arrives. Two similar alternators, a missing box, or a partial credit can turn a small administrative task into money left unresolved.
 
@@ -28,7 +28,7 @@ A technician speaks naturally while inspecting the removed part. AssemblyAI's na
 
 Our fictional Pine Ridge Diesel demonstration follows a $240 alternator deposit on invoice INV-8042, work order WO-418. A second similar part belongs to a different job, so matching by part family alone is insufficient. The original box is gone, but Northline Parts' configured demonstration policy permits an approved alternative container. The user confirms the match and observed condition, then generates the packet and records dispatch.
 
-The workflow continues after the part leaves the bench. Credit memo CM-219 records only $200. Benchback shows $200 credited and a $40 shortfall—not $240 recovered. A later $40 credit memo, CM-220, resolves the remaining amount. Alternatively, the owner can accept a documented final deduction: $200 credited, $40 accepted deduction, $0 unresolved. A deduction is never reported as recovered credit.
+The workflow continues after the part leaves the bench. Credit memo CM-219 records only $200. Benchback shows $200 credited and a $40 shortfall-not $240 recovered. A later $40 credit memo, CM-220, resolves the remaining amount. Alternatively, the owner can accept a documented final deduction: $200 credited, $40 accepted deduction, $0 unresolved. A deduction is never reported as recovered credit.
 
 Voice fits the point where the information lives: a person handling a used part and reading its label. The agent can ask the next useful question immediately, while the application retains explicit control over money and state changes. Manual input remains available when speaking is inconvenient.
 
@@ -42,7 +42,7 @@ Created and built by Shivam Gupta for the AssemblyAI Voice Agent Hackathon.
 
 AssemblyAI · Voice Agent API · Real-time voice AI · Tool calling · WebSockets · Structured imports · Workflow automation · Authentication
 
-React 19 · TypeScript · Vinext · Cloudflare Workers · D1 · OpenAI Sites · jsPDF. Direct supplier/ERP/carrier integrations are not implemented.
+React 19 · TypeScript · Next.js · Firebase Hosting · Firebase Authentication · Firestore · Cloud Run · jsPDF. Direct supplier/ERP/carrier integrations are not implemented.
 
 ## Category tags
 
@@ -54,9 +54,9 @@ AssemblyAI handles the real-time spoken interaction. The application supplies ca
 
 ## Cover image copy
 
-**Headline:** The job is done. Get the deposit back.  
-**Supporting line:** Speak. Return. Match the credit.  
-**Visual:** A used alternator alongside a simple ledger: $240 deposit → $200 credited → $40 still open.  
+**Headline:** The job is done. Get the deposit back.
+**Supporting line:** Speak. Return. Match the credit.
+**Visual:** A used alternator alongside a simple ledger: $240 deposit → $200 credited → $40 still open.
 **Footer:** Benchback · Built by Shivam Gupta · Powered by AssemblyAI
 
 ## Submission fields to finalize
@@ -65,12 +65,12 @@ AssemblyAI handles the real-time spoken interaction. The application supplies ca
 |---|---|
 | Creator | Shivam Gupta |
 | Repository | https://github.com/shi1720/AssemblyAI (public, MIT) |
-| Live application | https://benchback-shivam.sg127977958.chatgpt.site (owner-private pending sharing approval) |
-| Judge access | Once sharing is enabled: open the example without using real records; sign in for private saved records. Live voice requires configured AssemblyAI key. |
+| Live application | https://benchback-ai.web.app |
+| Judge access | Open the public example or create a private guest workspace. Live voice is configured, with daily session limits. |
 | Video | Insert the final recorded presentation URL |
 | Slides | benchback-pitch.pptx or benchback-pitch.pdf |
 | Cover | benchback-cover.png |
-| License | MIT LICENSE and upstream build/style licenses included |
+| License | MIT LICENSE and applicable upstream licenses included |
 
 ## Final claim check
 

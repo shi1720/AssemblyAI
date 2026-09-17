@@ -6,12 +6,14 @@ type Options = {
   onState: (s: CoreState, e?: AuditEvent) => void;
   onError: (s: string) => void;
   onEnd: () => void;
+  signal?: AbortSignal;
 };
-async function post(path: string, data: unknown) {
+async function post(path: string, data: unknown, signal?: AbortSignal) {
   const r = await fetch("/api/" + path, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
+    signal,
   });
   const d = (await r.json()) as {
     error?: string;
@@ -42,6 +44,7 @@ export async function startVoiceSession(o: Options) {
     nextPlayback = 0,
     sessionId = "";
   let safetyTimer: ReturnType<typeof setTimeout> | undefined,
+    setupTimer: ReturnType<typeof setTimeout> | undefined,
     connectTimer: ReturnType<typeof setTimeout> | undefined,
     finishTimer: ReturnType<typeof setTimeout> | undefined;
   const sources = new Set<AudioBufferSourceNode>();
@@ -52,6 +55,19 @@ export async function startVoiceSession(o: Options) {
   const calls = new Map<string, Promise<void>>();
   let interruptionEpoch = 0;
   const writes = new Set<Promise<unknown>>();
+  const transcriptWrites = new Set<Promise<unknown>>();
+  const setupController = new AbortController();
+  let setupComplete = false;
+  let requestingToken = false;
+  let setupError: Error | undefined;
+  let rejectSetup!: (error: Error) => void;
+  const setupFailure = new Promise<never>((_, reject) => {
+    rejectSetup = reject;
+  });
+  // A pre-aborted caller can cancel before the first setup await is attached.
+  void setupFailure.catch(() => {});
+  const duringSetup = <T>(operation: Promise<T>) =>
+    Promise.race([operation, setupFailure]);
   const stopPlayback = () => {
     for (const source of sources) {
       try {
@@ -64,8 +80,10 @@ export async function startVoiceSession(o: Options) {
   const clean = () => {
     if (cleaned) return;
     cleaned = true;
+    ending = true;
     ready = false;
     clearTimeout(safetyTimer);
+    clearTimeout(setupTimer);
     clearTimeout(connectTimer);
     clearTimeout(finishTimer);
     node?.disconnect();
@@ -74,7 +92,15 @@ export async function startVoiceSession(o: Options) {
     void ctx?.close();
     if (ws && ws.readyState < 2) ws.close();
     window.removeEventListener("pagehide", pagehide);
+    o.signal?.removeEventListener("abort", abort);
     o.onEnd();
+  };
+  const cancelSetup = (error: Error) => {
+    if (setupComplete || setupError) return;
+    setupError = error;
+    rejectSetup(error);
+    setupController.abort();
+    clean();
   };
   const send = (data: unknown) => {
     if (ws?.readyState === WebSocket.OPEN) ws.send(JSON.stringify(data));
@@ -101,6 +127,12 @@ export async function startVoiceSession(o: Options) {
         .catch(() => {});
   };
   const pagehide = () => {
+    if (!setupComplete) {
+      cancelSetup(
+        new Error("Voice startup was cancelled when the page closed."),
+      );
+      return;
+    }
     send({ type: "session.end" });
     if (sessionId)
       void fetch(`/api/sessions/${sessionId}/end`, {
@@ -111,29 +143,66 @@ export async function startVoiceSession(o: Options) {
       });
     clean();
   };
+  const abort = () => {
+    if (!setupComplete) cancelSetup(new Error("Voice startup was cancelled."));
+    else pagehide();
+  };
+  window.addEventListener("pagehide", pagehide);
+  o.signal?.addEventListener("abort", abort, { once: true });
   try {
+    if (o.signal?.aborted) {
+      abort();
+      throw setupError;
+    }
+    setupTimer = setTimeout(() => {
+      cancelSetup(
+        new Error(
+          requestingToken
+            ? "Voice session setup timed out. Check your connection and retry, or use the form."
+            : "Microphone setup timed out. Allow microphone access in your browser, check that a microphone is connected, then retry or use the form.",
+        ),
+      );
+    }, 20000);
     // Request microphone before creating a billable provider session.
-    stream = await navigator.mediaDevices.getUserMedia({
-      audio: {
-        channelCount: 1,
-        echoCancellation: true,
-        noiseSuppression: false,
-        autoGainControl: true,
-      },
-    });
+    const acquiredStream = await duringSetup(
+      navigator.mediaDevices
+        .getUserMedia({
+          audio: {
+            channelCount: 1,
+            echoCancellation: true,
+            noiseSuppression: false,
+            autoGainControl: true,
+          },
+        })
+        .then((acquired) => {
+          // The permission dialog cannot be aborted. Stop a late grant instead
+          // of letting it continue into a provider session after cancellation.
+          if (cleaned || ending) {
+            acquired.getTracks().forEach((track) => track.stop());
+            throw setupError || new Error("Voice startup was cancelled.");
+          }
+          return acquired;
+        }),
+    );
+    stream = acquiredStream;
     ctx = new AudioContext();
-    await ctx.resume();
-    await ctx.audioWorklet.addModule("/pcm-worklet.js");
+    await duringSetup(ctx.resume());
+    await duringSetup(ctx.audioWorklet.addModule("/pcm-worklet.js"));
+    requestingToken = true;
     const {
       token,
       sessionId: id,
       config,
-    } = await post("voice/token", { coreId: o.coreId });
+    } = await duringSetup(
+      post("voice/token", { coreId: o.coreId }, setupController.signal),
+    );
     sessionId = id;
+    setupComplete = true;
+    clearTimeout(setupTimer);
     ws = new WebSocket(
       `wss://agents.assemblyai.com/v1/ws?token=${encodeURIComponent(token)}`,
     );
-    const input = ctx.createMediaStreamSource(stream);
+    const input = ctx.createMediaStreamSource(acquiredStream);
     node = new AudioWorkletNode(ctx, "benchback-pcm");
     input.connect(node);
     // Keep worklet processing while never feeding microphone audio back to the speakers.
@@ -158,6 +227,7 @@ export async function startVoiceSession(o: Options) {
     };
     ws.onopen = () => send({ type: "session.update", session: config });
     ws.onmessage = (e) => {
+      if (cleaned) return;
       let m;
       try {
         m = JSON.parse(e.data);
@@ -174,6 +244,8 @@ export async function startVoiceSession(o: Options) {
         acceptAudio = true;
         o.onStatus("speaking");
       } else if (m.type === "input.speech.started") {
+        // Interactive tool results are accepted only after reply.done.
+        responseActive = true;
         interruptionEpoch++;
         acceptAudio = false;
         pending.clear();
@@ -227,7 +299,11 @@ export async function startVoiceSession(o: Options) {
               ),
           );
           writes.add(write);
-          void write.finally(() => writes.delete(write));
+          transcriptWrites.add(write);
+          void write.finally(() => {
+            writes.delete(write);
+            transcriptWrites.delete(write);
+          });
         }
       } else if (m.type === "tool.call") {
         const callId = String(m.call_id);
@@ -235,6 +311,8 @@ export async function startVoiceSession(o: Options) {
         const epoch = interruptionEpoch;
         const promise = (async () => {
           try {
+            // Grounding checks read finalized transcript lines from the server.
+            await Promise.allSettled([...transcriptWrites]);
             const d = await post(`sessions/${sessionId}/tool`, {
               callId,
               name: m.name,
@@ -290,7 +368,6 @@ export async function startVoiceSession(o: Options) {
       o.onError("Voice startup timed out. Please retry or use the form.");
       end();
     }, 20000);
-    window.addEventListener("pagehide", pagehide);
     return {
       end,
       mute: (muted: boolean) =>

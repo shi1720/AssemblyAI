@@ -193,7 +193,7 @@ export function CoreDetail({
             </div>
             {r.deductionCents > 0 && (
               <div className="alert">
-                {money(r.deductionCents)} accepted deduction — not recovered
+                {money(r.deductionCents)} accepted deduction - not recovered
                 credit. {s.deduction?.reason}
               </div>
             )}

@@ -1,0 +1,13 @@
+.git
+node_modules
+.next
+.env*
+outputs
+work
+.wrangler
+dist
+.codex
+.agents
+.sites-runtime
+submission
+*.log

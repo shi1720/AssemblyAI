@@ -109,6 +109,130 @@ async function tick() {
   for (let i = 0; i < 20; i++) await Promise.resolve();
 }
 describe("voice transport contract (provider mocked)", () => {
+  it("times out an unanswered microphone prompt without creating a token", async () => {
+    getMedia.mockReturnValue(new Promise(() => {}));
+    const c = callbacks();
+    const startup = startVoiceSession(c);
+    const rejection = expect(startup).rejects.toThrow(
+      /Microphone setup timed out/,
+    );
+    await vi.advanceTimersByTimeAsync(19999);
+    expect(c.onEnd).not.toHaveBeenCalled();
+    expect(request).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(1);
+    await rejection;
+    expect(c.onEnd).toHaveBeenCalledTimes(1);
+    expect(request).not.toHaveBeenCalled();
+  });
+  it("stops a microphone granted after startup has timed out", async () => {
+    let grant!: (stream: MediaStream) => void;
+    getMedia.mockReturnValue(
+      new Promise<MediaStream>((resolve) => {
+        grant = resolve;
+      }),
+    );
+    const c = callbacks();
+    const startup = startVoiceSession(c);
+    const rejection = expect(startup).rejects.toThrow(
+      /Microphone setup timed out/,
+    );
+    await vi.advanceTimersByTimeAsync(20000);
+    await rejection;
+    grant({ getTracks: () => [{ stop }] } as unknown as MediaStream);
+    await tick();
+    expect(stop).toHaveBeenCalledTimes(1);
+    expect(request).not.toHaveBeenCalled();
+    expect(c.onEnd).toHaveBeenCalledTimes(1);
+  });
+  it("cancels pending setup on pagehide and disposes of a late microphone", async () => {
+    let grant!: (stream: MediaStream) => void;
+    getMedia.mockReturnValue(
+      new Promise<MediaStream>((resolve) => {
+        grant = resolve;
+      }),
+    );
+    const c = callbacks();
+    const startup = startVoiceSession(c);
+    const rejection = expect(startup).rejects.toThrow(/page closed/);
+    const handler = vi
+      .mocked(window.addEventListener)
+      .mock.calls.find(([event]) => event === "pagehide")?.[1] as () => void;
+    expect(handler).toBeTypeOf("function");
+    handler();
+    await rejection;
+    grant({ getTracks: () => [{ stop }] } as unknown as MediaStream);
+    await tick();
+    expect(stop).toHaveBeenCalledTimes(1);
+    expect(request).not.toHaveBeenCalled();
+    expect(c.onEnd).toHaveBeenCalledTimes(1);
+    expect(window.removeEventListener).toHaveBeenCalledWith(
+      "pagehide",
+      handler,
+    );
+  });
+  it("cancels pending setup through an AbortSignal", async () => {
+    getMedia.mockReturnValue(new Promise(() => {}));
+    const controller = new AbortController();
+    const c = callbacks();
+    const startup = startVoiceSession({ ...c, signal: controller.signal });
+    const rejection = expect(startup).rejects.toThrow(/startup was cancelled/);
+    controller.abort();
+    await rejection;
+    await vi.advanceTimersByTimeAsync(20000);
+    expect(c.onEnd).toHaveBeenCalledTimes(1);
+    expect(request).not.toHaveBeenCalled();
+  });
+  it("never requests microphone access for a pre-aborted caller", async () => {
+    const controller = new AbortController();
+    controller.abort();
+    await expect(
+      startVoiceSession({ ...callbacks(), signal: controller.signal }),
+    ).rejects.toThrow(/startup was cancelled/);
+    expect(getMedia).not.toHaveBeenCalled();
+    expect(request).not.toHaveBeenCalled();
+  });
+  it("times out suspended audio setup and prevents a late token request", async () => {
+    let resume!: () => void;
+    vi.stubGlobal(
+      "AudioContext",
+      class extends Context {
+        resume = () =>
+          new Promise<void>((resolve) => {
+            resume = resolve;
+          });
+      },
+    );
+    const c = callbacks();
+    const startup = startVoiceSession(c);
+    const rejection = expect(startup).rejects.toThrow(/setup timed out/);
+    await tick();
+    await vi.advanceTimersByTimeAsync(20000);
+    await rejection;
+    expect(stop).toHaveBeenCalled();
+    expect(close).toHaveBeenCalledTimes(1);
+    resume();
+    await tick();
+    expect(request).not.toHaveBeenCalled();
+    expect(c.onEnd).toHaveBeenCalledTimes(1);
+  });
+  it("aborts a stalled token request and stops the microphone", async () => {
+    request.mockReturnValue(new Promise(() => {}));
+    const c = callbacks();
+    const startup = startVoiceSession(c);
+    const rejection = expect(startup).rejects.toThrow(
+      /Voice session setup timed out/,
+    );
+    await tick();
+    expect(request).toHaveBeenCalledTimes(1);
+    const requestSignal = request.mock.calls[0][1].signal as AbortSignal;
+    expect(requestSignal.aborted).toBe(false);
+    await vi.advanceTimersByTimeAsync(20000);
+    await rejection;
+    expect(requestSignal.aborted).toBe(true);
+    expect(stop).toHaveBeenCalled();
+    expect(close).toHaveBeenCalledTimes(1);
+    expect(c.onEnd).toHaveBeenCalledTimes(1);
+  });
   it("does not issue a token when microphone permission is denied", async () => {
     getMedia.mockRejectedValue(
       Object.assign(new Error("no"), { name: "NotAllowedError" }),
@@ -154,6 +278,22 @@ describe("voice transport contract (provider mocked)", () => {
     });
     session.end();
   });
+  it("holds new tool results from speech start until the reply finishes", async () => {
+    const session = await startVoiceSession(callbacks());
+    const ws = Socket.last;
+    ws.emit({ type: "input.speech.started" });
+    ws.emit({
+      type: "tool.call",
+      call_id: "speech-tool",
+      name: "get_return_readiness",
+      arguments: {},
+    });
+    await tick();
+    expect(ws.sent.some((x) => x.type === "tool.result")).toBe(false);
+    ws.emit({ type: "reply.done", status: "completed" });
+    expect(ws.sent.some((x) => x.type === "tool.result")).toBe(true);
+    session.end();
+  });
   it("cancels queued and late results on an interrupted turn", async () => {
     const session = await startVoiceSession(callbacks());
     const ws = Socket.last;
@@ -183,6 +323,40 @@ describe("voice transport contract (provider mocked)", () => {
     ws.emit({ type: "reply.started" });
     ws.emit({ type: "reply.audio", data: btoa("\0\0") });
     expect(audioStart).toHaveBeenCalledTimes(2);
+    session.end();
+  });
+  it("waits for transcript persistence before a tool request", async () => {
+    let saveLine!: (r: Response) => void;
+    request.mockImplementation(async (path: string) =>
+      path.endsWith("voice/token")
+        ? tokenResponse()
+        : path.endsWith("/transcript")
+          ? new Promise<Response>((resolve) => {
+              saveLine = resolve;
+            })
+          : Response.json({ result: { saved: true } }),
+    );
+    const session = await startVoiceSession(callbacks());
+    Socket.last.emit({
+      type: "transcript.user",
+      item_id: "proof",
+      text: "All components are present.",
+    });
+    Socket.last.emit({
+      type: "tool.call",
+      call_id: "tool-proof",
+      name: "record_inspection",
+      arguments: {},
+    });
+    await tick();
+    expect(request.mock.calls.some((x) => String(x[0]).endsWith("/tool"))).toBe(
+      false,
+    );
+    saveLine(Response.json({ ok: true }));
+    await tick();
+    expect(request.mock.calls.some((x) => String(x[0]).endsWith("/tool"))).toBe(
+      true,
+    );
     session.end();
   });
   it("preserves provider transcript text and saves the final entry", async () => {

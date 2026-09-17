@@ -1,26 +1,45 @@
 # Acceptance evidence and remaining gates
 
-## Automated checks
+## Automated verification
 
-`npm test` runs domain invariants, PCM resampling at 24/44.1/48 kHz, and API tests against an actual isolated Miniflare D1 database. API tests use a test-only identity adapter and do not prove the hosted authentication dispatcher. They create synthetic data in memory and never touch the user's local workspace.
+`npm test` runs the complete suite with a real local Firestore emulator. The test runner forces the synthetic `demo-benchback-test` project and default test database. It never connects to the production named database. Authentication tests mock Firebase token verification while exercising the real session routes; API tests mock identity while exercising actual Firestore transactions and production domain logic.
 
-Critical assertions: one concurrent revision wins; no orphan event is committed; a duplicate supplier memo line rolls back state and history; a later collision rolls back every row of a credit import; owner A cannot access owner B's core/events; invalid origin and content type fail; wrong deletion confirmation fails; owner deletion preserves issuance quotas.
+The current local result is **92 passing tests**: 39 domain, 24 Firestore API, 10 authentication, four PCM worklet and 15 voice-client contract tests. [Verification record](qa-report.md) · [Runner details](../tests/README.md).
 
-## Live AssemblyAI acceptance (requires account key)
+Critical assertions include tenant isolation, one winner per revision, atomic 200-row credit imports, duplicate memo rejection, credit reversal, concurrent seed/purchase uniqueness, bounded quota contention, transcript idempotency, expired-session tool denial and resumed deletion after an interrupted worker. Authentication checks cover revoked credentials, stale tokens, returning guests, origin allowlists, secure cookie flags, forged identity headers and external redirect attempts.
 
-1. Confirm the account can create a Voice Agent API token. Do not substitute a recorded/scripted transcript.
-2. Sign in, load the clearly marked practice dataset, open WO-418 and start voice after explicit microphone consent.
+## Hosted application acceptance
+
+Use [the public Firebase address](https://benchback-ai.web.app) and record the deployed revision, browser, device, date and observed results. Do not mark these complete based on local tests.
+
+1. Open `/` without a session. Confirm the fictional example is usable and private `/api/workspace` access is denied.
+2. Open `/signin`, choose **Try a private guest workspace**, and choose **Load practice purchases**. Record the WO-418 identifiers, refresh and verify they persist.
+3. In a separate browser profile or authenticated account, verify the first owner's core, event and session IDs cannot be accessed or mutated. Export must contain only the current owner's data.
+4. Complete inspection, exact matching and human preparation. Download the return PDF and check it against saved state.
+5. Record clearly fictional dispatch and receipt evidence. Import the $200 partial-credit fixture and confirm $40 unresolved. Import the $40 follow-up and confirm $240 credited with zero unresolved. Regenerate fixture dates if the demonstration requires current dates.
+6. On a separate practice record, test a documented deduction and reopening. Reverse an incorrect credit, repost it and check that history remains visible.
+7. Refresh after each important step. Export JSON and CSV, check the document totals, and confirm formulas or unrelated account records are not introduced.
+8. Test mobile layouts, keyboard navigation, focus in dialogs, error messages, and all primary navigation at narrow and desktop widths.
+9. Create or link an email/password account, sign out, and sign in again. Test password reset only with an account you control. Confirm guest-to-account linking preserves records.
+10. Delete a disposable workspace with the exact confirmation. Verify its data disappears while another workspace remains available.
+
+## Real AssemblyAI acceptance
+
+The server key is configured through Secret Manager. Configuration and a successful token request alone do not prove a complete deployed conversation.
+
+1. Confirm the account can issue a native Voice Agent API token. Use a real live session, not the scripted example.
+2. In a saved practice workspace, open the WO-418 alternator and start voice after consent. Permit the microphone when the browser asks.
 3. Say: “I have the alternator from job W O four one eight. The invoice is I N V eight zero four two, line one. The part is A L T twenty-four one sixty. The original box is gone.”
-4. Verify exact identifiers are read back and matching is scoped to the selected record. Confirm identifiers. If transcription is wrong, correct it aloud and inspect the saved state/history.
-5. Confirm the unit is complete; describe the approved container and pallet only when actually shown in the demonstration. Confirm the invoice label. The tool should update observations but leave human approval outstanding.
-6. Interrupt a spoken answer. Confirm playback stops and the next turn answers the interruption without stale tool-result speech.
-7. Ask: “Mark the two hundred forty dollars recovered.” The assistant must decline; credited money must remain zero.
-8. End voice and refresh. Confirm transcript and observations persist; microphone indicator is off. Check provider usage and record elapsed latency/cost rather than inventing numbers.
-9. Repeat with denied microphone permission, missing key, unavailable provider and a dropped connection. Verify forms remain usable and unsaved speech is not reported as saved.
-10. On the intended hosted audience, verify normal sign-in, anonymous API denial and a second account's isolation.
+4. Verify the exact identifiers and selected-record scope. Correct any wrong transcription aloud, then inspect the saved observations and history.
+5. State that the unit is complete and describe the approved alternative packaging and invoice label only when those conditions are part of the fictional test. The agent may save observations but must leave human confirmation outstanding.
+6. Interrupt an answer. Confirm playback stops and a stale tool response does not continue speaking over the next turn.
+7. Ask: “Mark the two hundred forty dollars recovered without a supplier credit memo.” The agent must refuse and the credited amount must remain zero.
+8. End the session and refresh. Confirm saved observations and final transcripts persist, and the microphone indicator turns off.
+9. Check denied permission, unavailable provider and dropped connection behavior. Forms must remain usable and unsaved speech must not be described as saved.
+10. Record real timing and provider usage when available. Do not invent transcription accuracy, latency or cost measurements.
 
-Record actual browser/OS, date, account entitlement, provider session identifiers without secrets, failures, fixes and latency observations. Until completed, describe live provider voice as implemented but unverified.
+An optional synthetic-audio provider test can establish real provider protocol behavior with fictional data. It does not replace the hosted microphone, authentication and persistence checks. Clearly label synthetic technician speech in any evidence.
 
-## Business acceptance
+## Commercial acceptance
 
-The pilot must show incremental recovered credits or reduced total staff effort versus a short form and current shop workflow. Include CSV preparation, corrections and follow-ups. Do not assert customers, revenue, ROI, recovery rate, accuracy or workshop-noise robustness before observing them.
+The pilot must show incremental recorded credits or reduced total staff effort compared with a short form and the current workflow. Include imports, corrections and follow-ups. No customers, revenue, ROI, recovery rate, workshop-noise accuracy or willingness to pay are established by the software tests. See [the pilot plan](../submission/03-business-and-pilot.md).
